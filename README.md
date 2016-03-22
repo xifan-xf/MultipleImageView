@@ -1,5 +1,10 @@
 # MultipleImageView
 A single view draw like gridview
+
+![image](https://github.com/xufan/MultipleImageView/blob/master/image/1.png)
+   
+![image](https://github.com/xufan/MultipleImageView/blob/master/image/2.png)
+   
 ![image](https://github.com/xufan/MultipleImageView/blob/master/image/show.gif)   
 # Usage
 ```xml
