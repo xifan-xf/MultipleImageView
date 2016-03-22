@@ -10,6 +10,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Shader;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.MotionEvent;
@@ -31,7 +32,7 @@ import geek.fan.multipleimageview.R;
 public class MultipleImageView extends View {
 
     private ArrayList<String> mImageUrls = new ArrayList<>();
-    private ArrayList<Bitmap> mBitmaps = new ArrayList<>();
+    private SparseArray<Bitmap> mBitmaps = new SparseArray<>();
     private Bitmap mPlaceHolder;
     private int mHorizontalSpace = 10;
     private int mVerticalSpace = 10;
@@ -218,33 +219,36 @@ public class MultipleImageView extends View {
             bitmap = mPlaceHolder;
         }
 
-        float left = getPaddingLeft() + column * mHorizontalSpace + column * imageWidth;
-        float top = getPaddingTop() + row * mVerticalSpace + perImageWidth;
+        if (bitmap != null) {
+            float left = getPaddingLeft() + column * mHorizontalSpace + column * imageWidth;
+            float top = getPaddingTop() + row * mVerticalSpace + perImageWidth;
 
-        float scale;
-        float dx = 0, dy = 0;
+            float scale;
+            float dx = 0, dy = 0;
 
-        int dwidth = bitmap.getWidth();
-        int dheight = bitmap.getHeight();
-        int vwidth = imageWidth;
-        int vheight = imageWidth;
-        if (dwidth * vheight > vwidth * dheight) {
-            scale = (float) vheight / (float) dheight;
-            dx = (vwidth - dwidth * scale) * 0.5f;//scale后中心点
-        } else {
-            scale = (float) vwidth / (float) dwidth;
-            dy = (vheight - dheight * scale) * 0.5f;
+            int dwidth = bitmap.getWidth();
+            int dheight = bitmap.getHeight();
+            int vwidth = imageWidth;
+            int vheight = imageWidth;
+            if (dwidth * vheight > vwidth * dheight) {
+                scale = (float) vheight / (float) dheight;
+                dx = (vwidth - dwidth * scale) * 0.5f;//scale后中心点
+            } else {
+                scale = (float) vwidth / (float) dwidth;
+                dy = (vheight - dheight * scale) * 0.5f;
+            }
+
+            matrix.setScale(scale, scale);
+            matrix.postTranslate(left + Math.round(dx), top + Math.round(dy));
+
+            BitmapShader mBitmapShader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+            mBitmapShader.setLocalMatrix(matrix);
+            paint.setShader(mBitmapShader);
+            RectF rectF = new RectF(left, top, left + imageWidth, top + imageWidth);
+            canvas.drawRoundRect(rectF, mRadius, mRadius, paint);
+            drawRectList.put(i, rectF);
         }
 
-        matrix.setScale(scale, scale);
-        matrix.postTranslate(left + Math.round(dx), top + Math.round(dy));
-
-        BitmapShader mBitmapShader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-        mBitmapShader.setLocalMatrix(matrix);
-        paint.setShader(mBitmapShader);
-        RectF rectF = new RectF(left, top, left + imageWidth, top + imageWidth);
-        canvas.drawRoundRect(rectF, mRadius, mRadius, paint);
-        drawRectList.put(i, rectF);
     }
 
 
@@ -278,7 +282,7 @@ public class MultipleImageView extends View {
 
     private int getClickItem(MotionEvent event) {
         for (int i = 0; i < drawRectList.size(); i++) {
-            if (drawRectList.get(i).contains(event.getX(), event.getY())) {
+            if (drawRectList.get(i) != null && drawRectList.get(i).contains(event.getX(), event.getY())) {
                 return i;
             }
         }
@@ -289,12 +293,7 @@ public class MultipleImageView extends View {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        /*for (WeakReference<SimpleTarget<Bitmap>> weakTarget : targetList) {
-            if (weakTarget.get() != null) {
-                Glide.clear(weakTarget.get());
-            }
-        }*/
-        //Glide.clear(glideTarget);
+        setImageUrls(null);
     }
 
     @Override
@@ -306,17 +305,18 @@ public class MultipleImageView extends View {
         void onClick(int i, ArrayList<String> urls);
     }
 
-    private void loadBitmap(int i) {
+    private void loadBitmap(final int i) {
         if (mImageUrls.isEmpty()) {
             return;
         }
         isLoading = true;
         SimpleTarget<Bitmap> weakTarget = targetList.get(i);
         if (weakTarget == null) {
-            weakTarget = new SimpleTarget<Bitmap>() {
+            weakTarget = new SimpleTarget<Bitmap>(mMaxImageWidth, mMaxImageWidth) {
                 @Override
                 public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                    mBitmaps.add(resource);
+                    mBitmaps.put(i, resource);
+
                     int bSize = mBitmaps.size();
                     refresh(bSize - 1);
                     if (bSize < mImageUrls.size()) {
@@ -325,19 +325,30 @@ public class MultipleImageView extends View {
                         isLoading = false;
                     }
                 }
+
+                @Override
+                public void onLoadCleared(Drawable placeholder) {
+                    super.onLoadCleared(placeholder);
+                    mBitmaps.put(i, null);
+                }
             };
             targetList.put(i, weakTarget);
         }
-        Glide.with(getContext()).load(mImageUrls.get(i)).asBitmap().dontAnimate().dontTransform().into(weakTarget);
+        Glide.clear(weakTarget);
+        Glide.with(getContext()).load(mImageUrls.get(i)).asBitmap().dontAnimate().dontTransform()
+                .into(weakTarget);
     }
 
     public void setImageUrls(List<String> imageUrls) {
-        this.mImageUrls.clear();
-        this.mImageUrls.addAll(imageUrls);
+        mImageUrls.clear();
         mBitmaps.clear();
         targetList.clear();
         drawRectList.clear();
         isLoading = false;
+        if (imageUrls != null && !imageUrls.isEmpty()) {
+            mImageUrls.addAll(imageUrls);
+        }
+
         requestLayout();
     }
 
@@ -345,20 +356,6 @@ public class MultipleImageView extends View {
     public void setOnClickItemListener(OnClickItemListener onClickItemListener) {
         this.onClickItemListener = onClickItemListener;
     }
-
-    /*private SimpleTarget<Bitmap> glideTarget = new SimpleTarget<Bitmap>() {
-        @Override
-        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-            mBitmaps.add(resource);
-            int bSize = mBitmaps.size();
-            refresh(bSize - 1);
-            if (bSize < mImageUrls.size()) {
-                loadBitmap(bSize);
-            } else {
-                isLoading = false;
-            }
-        }
-    };*/
 
     private void refresh(int pos) {
         switch (mImageUrls.size()) {
