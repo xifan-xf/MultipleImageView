@@ -348,7 +348,6 @@ public class MultipleImageView extends View {
         if (imageUrls != null && !imageUrls.isEmpty()) {
             mImageUrls.addAll(imageUrls);
         }
-
         requestLayout();
     }
 
