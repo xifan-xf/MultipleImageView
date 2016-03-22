@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MultipleImageView">
+        <attr name="mivHorizontalSpace" format="dimension"/>
+        <attr name="mivVerticalSpace" format="dimension"/>
+        <attr name="mivRadius" format="dimension"/>
+        <attr name="mivStaggeredMode" format="boolean"/>
+    </declare-styleable>
+
+    <declare-styleable name="PhotoWallView">
+        <attr name="pwvHorizontalSpace" format="dimension"/>
+        <attr name="pwvVerticalSpace" format="dimension"/>
+        <attr name="pwvRadius" format="dimension"/>
+        <attr name="pwvColumns" format="integer"/>
+    </declare-styleable>
+</resources>
