@@ -4,7 +4,6 @@
         <attr name="mivHorizontalSpace" format="dimension"/>
         <attr name="mivVerticalSpace" format="dimension"/>
         <attr name="mivRadius" format="dimension"/>
-        <attr name="mivStaggeredMode" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="PhotoWallView">

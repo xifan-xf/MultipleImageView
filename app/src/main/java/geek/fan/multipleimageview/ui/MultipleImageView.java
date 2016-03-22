@@ -11,6 +11,7 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.util.AttributeSet;
+import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -19,7 +20,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,19 +36,17 @@ public class MultipleImageView extends View {
     private int mHorizontalSpace = 10;
     private int mVerticalSpace = 10;
     private int mRadius = 0;
-    private int mColumns = 3;
-    private int mRows = 1;
     private int mMaxImageWidth = 0;
     private int mImageWidth = 0;
     private int mMinImageWidth = 0;
-    private boolean mIsStaggered = true;
     private Matrix matrix = new Matrix();
     final Paint paint = new Paint();
     private boolean isLoading = false;
     private OnClickItemListener onClickItemListener;
     private MotionEvent mEventDown;
     private int mDown;
-    private List<WeakReference<SimpleTarget<Bitmap>>> targetList = new ArrayList<>();
+    private SparseArray<RectF> drawRectList = new SparseArray<>();
+    private SparseArray<SimpleTarget<Bitmap>> targetList = new SparseArray<>();
 
 
     public MultipleImageView(Context context) {
@@ -75,9 +73,7 @@ public class MultipleImageView extends View {
                     case R.styleable.MultipleImageView_mivRadius:
                         mRadius = a.getDimensionPixelSize(attr, mRadius);
                         break;
-                    case R.styleable.MultipleImageView_mivStaggeredMode:
-                        mIsStaggered = a.getBoolean(attr, mIsStaggered);
-                        break;
+
                 }
             }
         }
@@ -100,43 +96,38 @@ public class MultipleImageView extends View {
         if (!mImageUrls.isEmpty()) {
             int width = getDefaultSize(getSuggestedMinimumWidth(), widthMeasureSpec);
             int height = getDefaultSize(getSuggestedMinimumHeight(), heightMeasureSpec);
-            mRows = (int) Math.ceil(mImageUrls.size() * 1f / 3);
-            if (!mIsStaggered) {
-                mImageWidth = (width - (mColumns - 1) * mHorizontalSpace - getPaddingLeft() - getPaddingRight()) / mColumns;
-                height = mImageWidth * mRows + (mRows - 1) * mVerticalSpace + getPaddingTop() + getPaddingBottom();
-            } else {
-                mMaxImageWidth = width - getPaddingLeft() - getPaddingRight();
-                mImageWidth = (width - mHorizontalSpace - getPaddingLeft() - getPaddingRight()) / 2;
-                mMinImageWidth = (width - mHorizontalSpace - getPaddingLeft() - getPaddingRight()) / 3;
-                switch (mImageUrls.size()) {
-                    case 1:
-                        height = mMaxImageWidth + getPaddingTop() + getPaddingBottom();
-                        break;
-                    case 2:
-                        height = mImageWidth + getPaddingTop() + getPaddingBottom();
-                        break;
-                    case 3:
-                        height = mMaxImageWidth + mVerticalSpace + mImageWidth + getPaddingTop() + getPaddingBottom();
-                        break;
-                    case 4:
-                        height = mImageWidth * 2 + mVerticalSpace + getPaddingTop() + getPaddingBottom();
-                        break;
-                    case 5:
-                        height = mImageWidth + mMinImageWidth + mVerticalSpace + getPaddingTop() + getPaddingBottom();
-                        break;
-                    case 6:
-                        height = mMinImageWidth * 2 + mVerticalSpace * 2 + getPaddingTop() + getPaddingBottom();
-                        break;
-                    case 7:
-                        height = mMinImageWidth + mImageWidth * 2 + mVerticalSpace * 2 + getPaddingTop() + getPaddingBottom();
-                        break;
-                    case 8:
-                        height = mMinImageWidth * 2 + mImageWidth + mVerticalSpace * 2 + getPaddingTop() + getPaddingBottom();
-                        break;
-                    case 9:
-                        height = mMinImageWidth * 3 + mVerticalSpace * 3 + getPaddingBottom() + getPaddingTop();
-                        break;
-                }
+
+            mMaxImageWidth = width - getPaddingLeft() - getPaddingRight();
+            mImageWidth = (width - mHorizontalSpace - getPaddingLeft() - getPaddingRight()) / 2;
+            mMinImageWidth = (width - mHorizontalSpace - getPaddingLeft() - getPaddingRight()) / 3;
+            switch (mImageUrls.size()) {
+                case 1:
+                    height = mMaxImageWidth + getPaddingTop() + getPaddingBottom();
+                    break;
+                case 2:
+                    height = mImageWidth + getPaddingTop() + getPaddingBottom();
+                    break;
+                case 3:
+                    height = mMaxImageWidth + mVerticalSpace + mImageWidth + getPaddingTop() + getPaddingBottom();
+                    break;
+                case 4:
+                    height = mImageWidth * 2 + mVerticalSpace + getPaddingTop() + getPaddingBottom();
+                    break;
+                case 5:
+                    height = mImageWidth + mMinImageWidth + mVerticalSpace + getPaddingTop() + getPaddingBottom();
+                    break;
+                case 6:
+                    height = mMinImageWidth * 2 + mVerticalSpace + getPaddingTop() + getPaddingBottom();
+                    break;
+                case 7:
+                    height = mMinImageWidth + mImageWidth * 2 + mVerticalSpace * 2 + getPaddingTop() + getPaddingBottom();
+                    break;
+                case 8:
+                    height = mMinImageWidth * 2 + mImageWidth + mVerticalSpace * 2 + getPaddingTop() + getPaddingBottom();
+                    break;
+                case 9:
+                    height = mMinImageWidth * 3 + mVerticalSpace * 2 + getPaddingBottom() + getPaddingTop();
+                    break;
             }
             setMeasuredDimension(width, height);
         } else {
@@ -154,8 +145,9 @@ public class MultipleImageView extends View {
                     drawBitmap(canvas, 0, 0, mMaxImageWidth, 0, 0);
                     break;
                 case 2:
-                    drawBitmap(canvas, 0, 0, mImageWidth, 0, 0);
-                    drawBitmap(canvas, 0, 1, mImageWidth, 0, 1);
+                    for (int column = 0; column < 2; column++) {
+                        drawBitmap(canvas, 0, column, mImageWidth, 0, column);
+                    }
                     break;
                 case 3:
                     drawBitmap(canvas, 0, 0, mMaxImageWidth, 0, 0);
@@ -205,13 +197,13 @@ public class MultipleImageView extends View {
                         }
                     }
                     break;
-                /*case 9:
+                case 9:
                     for (int row = 0; row < 3; row++) {
                         for (int column = 0; column < 3; column++) {
-                            drawBitmap(canvas, row, column, mMinImageWidth);
+                            drawBitmap(canvas, row, column, mMinImageWidth, mMinImageWidth * row, row * 3 + column);
                         }
                     }
-                    break;*/
+                    break;
             }
         }
     }
@@ -252,6 +244,7 @@ public class MultipleImageView extends View {
         paint.setShader(mBitmapShader);
         RectF rectF = new RectF(left, top, left + imageWidth, top + imageWidth);
         canvas.drawRoundRect(rectF, mRadius, mRadius, paint);
+        drawRectList.put(i, rectF);
     }
 
 
@@ -284,33 +277,24 @@ public class MultipleImageView extends View {
     }
 
     private int getClickItem(MotionEvent event) {
-        int i = -1;
-        float result = (event.getX() - getPaddingLeft() * 1f) / (mImageWidth + mHorizontalSpace);
-        if (result < 0 || result >= mColumns) {
-            return i;
+        for (int i = 0; i < drawRectList.size(); i++) {
+            if (drawRectList.get(i).contains(event.getX(), event.getY())) {
+                return i;
+            }
         }
-        int column = (int) result;
-
-        result = (event.getY() - getPaddingTop() * 1f) / (mImageWidth + mVerticalSpace);
-        if (result < 0 || result >= mRows) {
-            return i;
-        }
-        int row = (int) result;
-
-        i = row * mColumns + column;
-        return i < mImageUrls.size() ? i : -1;
+        return -1;
     }
+
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         /*for (WeakReference<SimpleTarget<Bitmap>> weakTarget : targetList) {
             if (weakTarget.get() != null) {
-                Log.e("onDetachedFromWindow", "Glide.clear:" + weakTarget.get().toString());
                 Glide.clear(weakTarget.get());
             }
         }*/
-        Glide.clear(glideTarget);
+        //Glide.clear(glideTarget);
     }
 
     @Override
@@ -327,14 +311,12 @@ public class MultipleImageView extends View {
             return;
         }
         isLoading = true;
-        /*WeakReference<SimpleTarget<Bitmap>> weakTarget;
-        if (targetList.isEmpty() || targetList.size() < i + 1) {
-            weakTarget = new WeakReference<SimpleTarget<Bitmap>>(new SimpleTarget<Bitmap>() {
+        SimpleTarget<Bitmap> weakTarget = targetList.get(i);
+        if (weakTarget == null) {
+            weakTarget = new SimpleTarget<Bitmap>() {
                 @Override
                 public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                     mBitmaps.add(resource);
-                    //invalidate();
-
                     int bSize = mBitmaps.size();
                     refresh(bSize - 1);
                     if (bSize < mImageUrls.size()) {
@@ -343,12 +325,10 @@ public class MultipleImageView extends View {
                         isLoading = false;
                     }
                 }
-            });
-            targetList.add(i, weakTarget);
-        } else {
-            weakTarget = targetList.get(i);
-        }*/
-        Glide.with(getContext()).load(mImageUrls.get(i)).asBitmap().dontAnimate().dontTransform().into(glideTarget);
+            };
+            targetList.put(i, weakTarget);
+        }
+        Glide.with(getContext()).load(mImageUrls.get(i)).asBitmap().dontAnimate().dontTransform().into(weakTarget);
     }
 
     public void setImageUrls(List<String> imageUrls) {
@@ -356,6 +336,7 @@ public class MultipleImageView extends View {
         this.mImageUrls.addAll(imageUrls);
         mBitmaps.clear();
         targetList.clear();
+        drawRectList.clear();
         isLoading = false;
         requestLayout();
     }
@@ -365,7 +346,7 @@ public class MultipleImageView extends View {
         this.onClickItemListener = onClickItemListener;
     }
 
-    private SimpleTarget<Bitmap> glideTarget = new SimpleTarget<Bitmap>() {
+    /*private SimpleTarget<Bitmap> glideTarget = new SimpleTarget<Bitmap>() {
         @Override
         public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
             mBitmaps.add(resource);
@@ -377,7 +358,7 @@ public class MultipleImageView extends View {
                 isLoading = false;
             }
         }
-    };
+    };*/
 
     private void refresh(int pos) {
         switch (mImageUrls.size()) {
@@ -405,6 +386,25 @@ public class MultipleImageView extends View {
                 }
                 break;
             case 6:
+                setImageRect(pos / 3, pos % 3, mMinImageWidth, pos / 3 * mMinImageWidth);
+                break;
+            case 7:
+                if (pos == 0 || pos == 1) {
+                    setImageRect(0, pos, mImageWidth, 0);
+                } else if (pos == 5 || pos == 6) {
+                    setImageRect(2, pos - 5, mImageWidth, mImageWidth + mMinImageWidth);
+                } else {
+                    setImageRect(1, pos - 2, mMinImageWidth, mImageWidth);
+                }
+                break;
+            case 8:
+                if (pos == 0 || pos == 1) {
+                    setImageRect(0, pos, mImageWidth, 0);
+                } else {
+                    setImageRect(pos / 3, pos % 3, mMinImageWidth, pos / 3 * mMinImageWidth + mImageWidth);
+                }
+                break;
+            case 9:
                 setImageRect(pos / 3, pos % 3, mMinImageWidth, pos / 3 * mMinImageWidth);
                 break;
         }

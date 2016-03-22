@@ -10,7 +10,6 @@
         android:layout_height="wrap_content"
         app:mivHorizontalSpace="4dp"
         app:mivRadius="5dp"
-        app:mivStaggeredMode="true"
         app:mivVerticalSpace="4dp" />
     <!--<geek.fan.multipleimageview.ui.PhotoWallView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/multiple_image"

@@ -49,7 +49,7 @@ public class FakeData {
         sixUrl.add("http://img.hb.aicdn.com/af8c2a33a4459def24379d6cab29e82f00a6122f56663-WsRq5L_fw658");
         datas.add(sixUrl);
 
-        /*ArrayList<String> sevenUrl=new ArrayList<>();
+        ArrayList<String> sevenUrl=new ArrayList<>();
         sevenUrl.add("http://img.hb.aicdn.com/605b64488af6d494f66356ce7d361c3b83805b5542b6c-IrBJA0_fw658");
         sevenUrl.add("http://img.hb.aicdn.com/30e5087a58fedfcc8d59baa83eb430952ebf674b5c5ea-bO6kfN_fw658");
         sevenUrl.add("http://img.hb.aicdn.com/862e4d611fdb9d9fe20bb19452bd3b5855e41fa07aeb0-lSF4PW_fw658");
@@ -68,20 +68,20 @@ public class FakeData {
         eightUrl.add("http://img.hb.aicdn.com/3124f84b3e6c5298f6b0af84bf9ea9f008416e3886c01-usIpXi_fw658");
         eightUrl.add("http://img.hb.aicdn.com/faff66a0ff4d26013d039286d44b7e8cd2c1083d264fc-5MhRxl_fw658");
         eightUrl.add("http://img.hb.aicdn.com/e8536dd6813c1e4895a71df09aaf0e05027894dd74e78-Vuzwv1_fw658");
-        datas.add(eightUrl);*/
+        datas.add(eightUrl);
 
 
-        /*ArrayList<String> nineUrl=new ArrayList<>();
-        nineUrl.add("http://huaban.com/pins/59541696/");
-        nineUrl.add("http://huaban.com/pins/59541662/");
-        nineUrl.add("http://huaban.com/pins/59541493/");
-        nineUrl.add("http://huaban.com/pins/59541556/");
-        nineUrl.add("http://huaban.com/pins/59541430/");
-        nineUrl.add("http://huaban.com/pins/59541350/");
-        nineUrl.add("http://huaban.com/pins/59541285/");
-        nineUrl.add("http://huaban.com/pins/59541096/");
-        nineUrl.add("http://huaban.com/pins/59541195/");
-        datas.add(eightUrl);*/
+        ArrayList<String> nineUrl=new ArrayList<>();
+        nineUrl.add("http://img.hb.aicdn.com/82a1bd4acbed7c8be5f3571f3eec729b09a1723b22c363-D5ScIe_fw658");
+        nineUrl.add("http://img.hb.aicdn.com/7f9e31ecb6bdc2887e799da940868981c8f2340b14af4e-celpUf_fw658");
+        nineUrl.add("http://img.hb.aicdn.com/6fe40a763523b7eb74e07901b34980b632b02e03539f6-hMtMS7_fw658");
+        nineUrl.add("http://img.hb.aicdn.com/e08fb9fc9ec2377f761306b5ccb9f644de5e9470348d1-gC60Wc_fw658");
+        nineUrl.add("http://img.hb.aicdn.com/649d0e0bcd86a1b250979a69a26b308f862dfea47bcfc-T8EJpD_fw658");
+        nineUrl.add("http://img.hb.aicdn.com/5e53057afa85c698f26775cbc6f4904ff56763598ae6d-II3bZ1_fw658");
+        nineUrl.add("http://img.hb.aicdn.com/d9df256ce956282a1576277a80848e4f182ef21b3e923-NA33Ba_fw658");
+        nineUrl.add("http://img.hb.aicdn.com/ef91907e89f0a9bc6b422da08538a32e8105fe6f3e464-MSxR8Y_fw658");
+        nineUrl.add("http://img.hb.aicdn.com/c70467430ae10c3e762ab8e55c6d68766a620d2544964-m3kJnY_fw658");
+        datas.add(nineUrl);
         return datas;
     }
 
