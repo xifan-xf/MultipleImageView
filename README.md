@@ -1,6 +1,6 @@
 # MultipleImageView
 A single view draw like gridview
-![image](https://github.com/xufan/MultipleImageView/tree/master/image/show.gif)   
+![image](https://github.com/xufan/MultipleImageView/blob/master/image/show.gif)   
 # Usage
 ```xml
   <geek.fan.multipleimageview.ui.MultipleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
