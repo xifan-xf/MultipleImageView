@@ -11,7 +11,6 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -225,14 +224,10 @@ public class MultipleImageView extends View {
             bitmap = mBitmaps.get(i);
         } else {
             bitmap = mPlaceHolder;
-            Log.d("drawBitmap", "row:" + row + "column:" + "pos:" + i + "-mPlaceHolder");
         }
 
         float left = getPaddingLeft() + column * mHorizontalSpace + column * imageWidth;
         float top = getPaddingTop() + row * mVerticalSpace + perImageWidth;
-        if (mImageUrls.size() == 6) {
-            Log.e("onDraw", "left=" + left + "top=" + top);
-        }
 
         float scale;
         float dx = 0, dy = 0;
@@ -332,7 +327,7 @@ public class MultipleImageView extends View {
             return;
         }
         isLoading = true;
-        WeakReference<SimpleTarget<Bitmap>> weakTarget;
+        /*WeakReference<SimpleTarget<Bitmap>> weakTarget;
         if (targetList.isEmpty() || targetList.size() < i + 1) {
             weakTarget = new WeakReference<SimpleTarget<Bitmap>>(new SimpleTarget<Bitmap>() {
                 @Override
@@ -352,7 +347,7 @@ public class MultipleImageView extends View {
             targetList.add(i, weakTarget);
         } else {
             weakTarget = targetList.get(i);
-        }
+        }*/
         Glide.with(getContext()).load(mImageUrls.get(i)).asBitmap().dontAnimate().dontTransform().into(glideTarget);
     }
 
@@ -374,8 +369,6 @@ public class MultipleImageView extends View {
         @Override
         public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
             mBitmaps.add(resource);
-            //invalidate();
-
             int bSize = mBitmaps.size();
             refresh(bSize - 1);
             if (bSize < mImageUrls.size()) {
@@ -418,13 +411,8 @@ public class MultipleImageView extends View {
     }
 
     private void setImageRect(int row, int column, int imageWidth, int perImageWidth) {
-
         int left = getPaddingLeft() + column * mHorizontalSpace + column * imageWidth;
         int top = getPaddingTop() + row * mVerticalSpace + perImageWidth;
         invalidate(left, top, left + imageWidth, top + imageWidth);
-        if (mImageUrls.size() == 6) {
-            Log.e("setImageRect", "left=" + left + "top=" + top);
-        }
-
     }
 }
