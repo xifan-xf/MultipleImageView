@@ -1,6 +1,6 @@
 # MultipleImageView
-A single view draw like gridview
 
+5、6、7 Images Format
 ![image](https://github.com/xufan/MultipleImageView/blob/master/image/1.png)
    
 ![image](https://github.com/xufan/MultipleImageView/blob/master/image/2.png)
