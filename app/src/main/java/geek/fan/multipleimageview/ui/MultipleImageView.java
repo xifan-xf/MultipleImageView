@@ -211,7 +211,7 @@ public class MultipleImageView extends View {
 
     private void drawBitmap(Canvas canvas, int row, int column, int imageWidth, int perImageWidth, int i) {
         Bitmap bitmap;
-        if (i >= mBitmaps.size()) {
+        if (i >= mImageUrls.size()) {
             return;
         } else if (i < mBitmaps.size()) {
             bitmap = mBitmaps.get(i);
@@ -307,7 +307,7 @@ public class MultipleImageView extends View {
                 @Override
                 public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                     mBitmaps.put(i, resource);
-                    refresh(mBitmaps.size() - 1);
+                    refresh(i);
                 }
 
                 @Override
