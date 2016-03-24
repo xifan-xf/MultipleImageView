@@ -35,7 +35,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
         holder.mMulipleIv.setImageUrls(mUrls.get(position));
         holder.mMulipleIv.setOnClickItemListener(new MultipleImageView.OnClickItemListener() {
             @Override
-            public void onClick(int i, ArrayList<String> urls) {
+            public void onClick(int i) {
                 Toast.makeText(mContext, "click on item:" + i, Toast.LENGTH_SHORT).show();
             }
         });
