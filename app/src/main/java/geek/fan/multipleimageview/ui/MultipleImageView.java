@@ -42,7 +42,6 @@ public class MultipleImageView extends View {
     private int mMinImageWidth = 0;
     private Matrix matrix = new Matrix();
     final Paint paint = new Paint();
-    private boolean isLoading = false;
     private OnClickItemListener onClickItemListener;
     private MotionEvent mEventDown;
     private int mDown;
@@ -86,9 +85,10 @@ public class MultipleImageView extends View {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        if (!isLoading) {
-            loadBitmap(0);
+        for (int i =0;i<mImageUrls.size();i++){
+            loadBitmap(i,mImageUrls.get(i));
         }
+
     }
 
     @Override
@@ -296,34 +296,18 @@ public class MultipleImageView extends View {
         setImageUrls(null);
     }
 
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-    }
-
     public interface OnClickItemListener {
         void onClick(int i, ArrayList<String> urls);
     }
 
-    private void loadBitmap(final int i) {
-        if (mImageUrls.isEmpty()) {
-            return;
-        }
-        isLoading = true;
+    private void loadBitmap(final int i,final String url) {
         SimpleTarget<Bitmap> weakTarget = targetList.get(i);
         if (weakTarget == null) {
             weakTarget = new SimpleTarget<Bitmap>(mMaxImageWidth, mMaxImageWidth) {
                 @Override
                 public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                     mBitmaps.put(i, resource);
-
-                    int bSize = mBitmaps.size();
-                    refresh(bSize - 1);
-                    if (bSize < mImageUrls.size()) {
-                        loadBitmap(bSize);
-                    } else {
-                        isLoading = false;
-                    }
+                    refresh(mBitmaps.size() - 1);
                 }
 
                 @Override
@@ -335,7 +319,7 @@ public class MultipleImageView extends View {
             targetList.put(i, weakTarget);
         }
         Glide.clear(weakTarget);
-        Glide.with(getContext()).load(mImageUrls.get(i)).asBitmap().dontAnimate().dontTransform()
+        Glide.with(getContext()).load(url).asBitmap().dontAnimate().dontTransform()
                 .into(weakTarget);
     }
 
@@ -344,7 +328,6 @@ public class MultipleImageView extends View {
         mBitmaps.clear();
         targetList.clear();
         drawRectList.clear();
-        isLoading = false;
         if (imageUrls != null && !imageUrls.isEmpty()) {
             mImageUrls.addAll(imageUrls);
         }

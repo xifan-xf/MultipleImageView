@@ -11,14 +11,6 @@
         app:mivHorizontalSpace="4dp"
         app:mivRadius="5dp"
         app:mivVerticalSpace="4dp" />
-    <!--<geek.fan.multipleimageview.ui.PhotoWallView xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/multiple_image"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:pwvColumns="3"
-        app:pwvHorizontalSpace="4dp"
-        app:pwvRadius="5dp"
-        app:pwvVerticalSpace="4dp" />-->
+
 
 </LinearLayout>
