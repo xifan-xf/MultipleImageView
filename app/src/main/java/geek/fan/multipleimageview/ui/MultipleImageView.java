@@ -85,8 +85,8 @@ public class MultipleImageView extends View {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        for (int i =0;i<mImageUrls.size();i++){
-            loadBitmap(i,mImageUrls.get(i));
+        for (int i = 0; i < mImageUrls.size(); i++) {
+            loadBitmap(i, mImageUrls.get(i));
         }
 
     }
@@ -140,78 +140,78 @@ public class MultipleImageView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (!mImageUrls.isEmpty()) {
-            switch (mImageUrls.size()) {
-                case 1:
-                    drawBitmap(canvas, 0, 0, mMaxImageWidth, 0, 0);
-                    break;
-                case 2:
+        switch (mBitmaps.size()) {
+            case 1:
+                drawBitmap(canvas, 0, 0, mMaxImageWidth, 0, 0);
+                break;
+            case 2:
+                for (int column = 0; column < 2; column++) {
+                    drawBitmap(canvas, 0, column, mImageWidth, 0, column);
+                }
+                break;
+            case 3:
+                drawBitmap(canvas, 0, 0, mMaxImageWidth, 0, 0);
+                drawBitmap(canvas, 1, 0, mImageWidth, mMaxImageWidth, 1);
+                drawBitmap(canvas, 1, 1, mImageWidth, mMaxImageWidth, 2);
+                break;
+            case 4:
+                for (int row = 0; row < 2; row++) {
                     for (int column = 0; column < 2; column++) {
-                        drawBitmap(canvas, 0, column, mImageWidth, 0, column);
+                        drawBitmap(canvas, row, column, mImageWidth, row * mImageWidth, row * 2 + column);
                     }
-                    break;
-                case 3:
-                    drawBitmap(canvas, 0, 0, mMaxImageWidth, 0, 0);
-                    drawBitmap(canvas, 1, 0, mImageWidth, mMaxImageWidth, 1);
-                    drawBitmap(canvas, 1, 1, mImageWidth, mMaxImageWidth, 2);
-                    break;
-                case 4:
-                    for (int row = 0; row < 2; row++) {
-                        for (int column = 0; column < 2; column++) {
-                            drawBitmap(canvas, row, column, mImageWidth, row * mImageWidth, row * 2 + column);
-                        }
-                    }
-                    break;
-                case 5:
-                    for (int column = 0; column < 2; column++) {
-                        drawBitmap(canvas, 0, column, mImageWidth, 0, column + 1);
-                    }
+                }
+                break;
+            case 5:
+                for (int column = 0; column < 2; column++) {
+                    drawBitmap(canvas, 0, column, mImageWidth, 0, column + 1);
+                }
+                for (int column = 0; column < 3; column++) {
+                    drawBitmap(canvas, 1, column, mMinImageWidth, mImageWidth, 2 + column);
+                }
+                break;
+            case 6:
+                for (int row = 0; row < 2; row++) {
                     for (int column = 0; column < 3; column++) {
-                        drawBitmap(canvas, 1, column, mMinImageWidth, mImageWidth, 2 + column);
+                        drawBitmap(canvas, row, column, mMinImageWidth, row * mMinImageWidth, row * 3 + column);
                     }
-                    break;
-                case 6:
-                    for (int row = 0; row < 2; row++) {
-                        for (int column = 0; column < 3; column++) {
-                            drawBitmap(canvas, row, column, mMinImageWidth, row * mMinImageWidth, row * 3 + column);
-                        }
-                    }
-                    break;
-                case 7:
-                    for (int column = 0; column < 2; column++) {
-                        drawBitmap(canvas, 0, column, mImageWidth, 0, column);
-                    }
+                }
+                break;
+            case 7:
+                for (int column = 0; column < 2; column++) {
+                    drawBitmap(canvas, 0, column, mImageWidth, 0, column);
+                }
+                for (int column = 0; column < 3; column++) {
+                    drawBitmap(canvas, 1, column, mMinImageWidth, mImageWidth, 2 + column);
+                }
+                for (int column = 0; column < 2; column++) {
+                    drawBitmap(canvas, 2, column, mImageWidth, mImageWidth + mMinImageWidth, 5 + column);
+                }
+                break;
+            case 8:
+                for (int column = 0; column < 2; column++) {
+                    drawBitmap(canvas, 0, column, mImageWidth, 0, column);
+                }
+                for (int row = 1; row < 3; row++) {
                     for (int column = 0; column < 3; column++) {
-                        drawBitmap(canvas, 1, column, mMinImageWidth, mImageWidth, 2 + column);
+                        drawBitmap(canvas, row, column, mMinImageWidth, mImageWidth + mMinImageWidth * (row - 1), 2 + (row - 1) * 3 + column);
                     }
-                    for (int column = 0; column < 2; column++) {
-                        drawBitmap(canvas, 2, column, mImageWidth, mImageWidth + mMinImageWidth, 5 + column);
+                }
+                break;
+            case 9:
+                for (int row = 0; row < 3; row++) {
+                    for (int column = 0; column < 3; column++) {
+                        drawBitmap(canvas, row, column, mMinImageWidth, mMinImageWidth * row, row * 3 + column);
                     }
-                    break;
-                case 8:
-                    for (int column = 0; column < 2; column++) {
-                        drawBitmap(canvas, 0, column, mImageWidth, 0, column);
-                    }
-                    for (int row = 1; row < 3; row++) {
-                        for (int column = 0; column < 3; column++) {
-                            drawBitmap(canvas, row, column, mMinImageWidth, mImageWidth + mMinImageWidth * (row - 1), 2 + (row - 1) * 3 + column);
-                        }
-                    }
-                    break;
-                case 9:
-                    for (int row = 0; row < 3; row++) {
-                        for (int column = 0; column < 3; column++) {
-                            drawBitmap(canvas, row, column, mMinImageWidth, mMinImageWidth * row, row * 3 + column);
-                        }
-                    }
-                    break;
-            }
+                }
+                break;
+            default:
+                break;
         }
     }
 
     private void drawBitmap(Canvas canvas, int row, int column, int imageWidth, int perImageWidth, int i) {
         Bitmap bitmap;
-        if (i >= mImageUrls.size()) {
+        if (i >= mBitmaps.size()) {
             return;
         } else if (i < mBitmaps.size()) {
             bitmap = mBitmaps.get(i);
@@ -270,7 +270,7 @@ public class MultipleImageView extends View {
                         if (mDown == iUp && iUp > -1) {
                             isClickItem = true;
                             if (onClickItemListener != null) {
-                                onClickItemListener.onClick(iUp, mImageUrls);
+                                onClickItemListener.onClick(iUp);
                             }
                         }
                     }
@@ -297,10 +297,10 @@ public class MultipleImageView extends View {
     }
 
     public interface OnClickItemListener {
-        void onClick(int i, ArrayList<String> urls);
+        void onClick(int i);
     }
 
-    private void loadBitmap(final int i,final String url) {
+    private void loadBitmap(final int i, final String url) {
         SimpleTarget<Bitmap> weakTarget = targetList.get(i);
         if (weakTarget == null) {
             weakTarget = new SimpleTarget<Bitmap>(mMaxImageWidth, mMaxImageWidth) {
@@ -340,7 +340,7 @@ public class MultipleImageView extends View {
     }
 
     private void refresh(int pos) {
-        switch (mImageUrls.size()) {
+        switch (mBitmaps.size()) {
             case 1:
                 invalidate();
                 break;
