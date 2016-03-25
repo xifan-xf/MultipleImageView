@@ -225,15 +225,15 @@ public class MultipleImageView extends View {
         float top = getPaddingTop() + row * mVerticalSpace + perImageWidth;
 
         float scale;
-            float dx = 0, dy = 0;
+        float dx = 0, dy = 0;
 
-            int dwidth = bitmap.getWidth();
-            int dheight = bitmap.getHeight();
+        int dwidth = bitmap.getWidth();
+        int dheight = bitmap.getHeight();
         int vwidth = imageWidth;
         int vheight = imageWidth;
         if (dwidth * vheight > vwidth * dheight) {
             scale = (float) vheight / (float) dheight;
-                dx = (vwidth - dwidth * scale) * 0.5f;//scale后中心点
+            dx = (vwidth - dwidth * scale) * 0.5f;//center after scale
         } else {
             scale = (float) vwidth / (float) dwidth;
             dy = (vheight - dheight * scale) * 0.5f;
@@ -290,11 +290,6 @@ public class MultipleImageView extends View {
         return -1;
     }
 
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        setImageUrls(null);
-    }
 
     public interface OnClickItemListener {
         void onClick(int i);
@@ -333,7 +328,7 @@ public class MultipleImageView extends View {
         }
         requestLayout();
     }
-    
+
 
     public void setOnClickItemListener(OnClickItemListener onClickItemListener) {
         this.onClickItemListener = onClickItemListener;
@@ -397,6 +392,7 @@ public class MultipleImageView extends View {
 
     private class PositionTarget extends SimpleTarget<Bitmap> {
         private final int i;
+
         PositionTarget(int i) {
             this.i = i;
         }
