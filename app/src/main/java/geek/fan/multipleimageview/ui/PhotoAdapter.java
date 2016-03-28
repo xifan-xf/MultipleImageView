@@ -69,4 +69,10 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
             mMulipleIv = (MultipleImageView) itemView.findViewById(R.id.multiple_image);
         }
     }
+
+    @Override
+    public void onViewRecycled(ViewHolder holder) {
+        super.onViewRecycled(holder);
+        holder.mMulipleIv.setImageUrls(null);
+    }
 }
